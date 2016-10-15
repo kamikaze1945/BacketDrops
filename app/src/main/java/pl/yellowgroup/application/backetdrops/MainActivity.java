@@ -22,9 +22,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(MainActivity.this, "Button clicked", Toast.LENGTH_SHORT).show();
+            showDialogAdd();
         }
     };
+
+    private void showDialogAdd() {
+        DialogAddFragment dialog = new DialogAddFragment();
+        dialog.show(getSupportFragmentManager(),"Add");
+    }
 
 
     @Override
