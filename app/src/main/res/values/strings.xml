@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">BacketDrops</string>
     <string name="str_add_a_drop">Add a Drop</string>
+    <string name="hint_et_drop">What it is ?</string>
+    <string name="str_add_it">Add it</string>
+    <string name="str_add_drop">Add a drop</string>
 </resources>
