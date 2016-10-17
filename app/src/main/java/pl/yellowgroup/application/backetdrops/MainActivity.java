@@ -2,7 +2,6 @@ package pl.yellowgroup.application.backetdrops;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +15,7 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import pl.yellowgroup.application.backetdrops.adapters.AdapterDrops;
 import pl.yellowgroup.application.backetdrops.beans.Drop;
+import pl.yellowgroup.application.backetdrops.widgets.BucketRecyclerView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,9 +24,10 @@ public class MainActivity extends AppCompatActivity {
     ImageView logo;
     Toolbar mToolbar;
     Button mBtnAdd;
-    RecyclerView mRecycler;
+    BucketRecyclerView mRecycler;
     Realm mRealm;
     RealmResults<Drop> mResults;
+    View mEmptyView;
     AdapterDrops mAdapter;
 
     // create variable listener onClick
@@ -64,13 +65,19 @@ public class MainActivity extends AppCompatActivity {
         logo = (ImageView) findViewById(R.id.iv_logo);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mBtnAdd = (Button) findViewById(R.id.btn_add);
-        mRecycler = (RecyclerView) findViewById(R.id.rv_drops);
+        mRecycler = (BucketRecyclerView) findViewById(R.id.rv_drops);
+        mEmptyView = findViewById(R.id.empty_drops);
 
         // use data from adapter AdapterDrops () OR we can set this code in layout XML in activity_main.xml in RecyclerView app:layoutManager
         //LinearLayoutManager manager = new LinearLayoutManager(this); for first part comment
         //mRecycler.setLayoutManager(manager); for first part comment
         mAdapter = new AdapterDrops(this, mResults);
         mRecycler.setAdapter(mAdapter);
+        //change view if
+        mRecycler.hideIfEmpty(mToolbar);
+        mRecycler.showIfEmpty(mEmptyView);
+
+        // set listener on acction if click button
         mBtnAdd.setOnClickListener(mBtnAddListener);
         setSupportActionBar(mToolbar);
         initBackgroundImage();
