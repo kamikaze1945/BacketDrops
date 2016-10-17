@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import pl.yellowgroup.application.backetdrops.beans.Drop;
 
 /**
@@ -45,11 +44,7 @@ public class DialogAddFragment extends DialogFragment {
         //get the time when it was added
         String what=mInputWhat.getText().toString();
         long now = System.currentTimeMillis();
-
-        RealmConfiguration configuration = new RealmConfiguration.Builder(getActivity())
-                .name("db_backet_drop.realm")
-                .build();
-        Realm.setDefaultConfiguration(configuration);
+        // create instance db defoult Realm
         Realm realm = Realm.getDefaultInstance();
 
         Drop drop= new Drop(what, now, 0, false);
