@@ -103,6 +103,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             super(itemView);
             mBtnAdd = (Button) itemView.findViewById(R.id.btn_footer);
             mBtnAdd.setOnClickListener(this);
+            mListener = listener;
         }
 
         @Override
