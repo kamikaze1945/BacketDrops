@@ -2,6 +2,7 @@ package pl.yellowgroup.application.backetdrops;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,7 @@ import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import pl.yellowgroup.application.backetdrops.adapters.AdapterDrops;
+import pl.yellowgroup.application.backetdrops.adapters.Divider;
 import pl.yellowgroup.application.backetdrops.beans.Drop;
 import pl.yellowgroup.application.backetdrops.widgets.BucketRecyclerView;
 
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mBtnAdd = (Button) findViewById(R.id.btn_add);
         mRecycler = (BucketRecyclerView) findViewById(R.id.rv_drops);
+        mRecycler.addItemDecoration(new Divider(this, LinearLayoutManager.VERTICAL));
         mEmptyView = findViewById(R.id.empty_drops);
 
         // use data from adapter AdapterDrops () OR we can set this code in layout XML in activity_main.xml in RecyclerView app:layoutManager
