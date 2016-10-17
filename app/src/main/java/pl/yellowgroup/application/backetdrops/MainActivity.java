@@ -19,7 +19,8 @@ import pl.yellowgroup.application.backetdrops.beans.Drop;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    public static final String TAG = MainActivity.class.getSimpleName();
+
     ImageView logo;
     Toolbar mToolbar;
     Button mBtnAdd;
@@ -47,9 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void showDialogAdd() {
         DialogAddFragment dialog = new DialogAddFragment();
-        dialog.show(getSupportFragmentManager(),"Add");
+        dialog.show(getSupportFragmentManager(), "Add");
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,36 +67,32 @@ public class MainActivity extends AppCompatActivity {
         mRecycler = (RecyclerView) findViewById(R.id.rv_drops);
 
         // use data from adapter AdapterDrops () OR we can set this code in layout XML in activity_main.xml in RecyclerView app:layoutManager
-        //LinearLayoutManager manager = new LinearLayoutManager(this);
-        //mRecycler.setLayoutManager(manager);
-        mRecycler.setAdapter(new AdapterDrops(this, mResults));
-
-        // set variable onClick listener
+        //LinearLayoutManager manager = new LinearLayoutManager(this); for first part comment
+        //mRecycler.setLayoutManager(manager); for first part comment
+        mAdapter = new AdapterDrops(this, mResults);
+        mRecycler.setAdapter(mAdapter);
         mBtnAdd.setOnClickListener(mBtnAddListener);
-
         setSupportActionBar(mToolbar);
         initBackgroundImage();
     }
 
-    private void initBackgroundImage() {
-        ImageView iv_background = (ImageView) findViewById(R.id.iv_background);
-        Glide.with(this)
-                .load(R.drawable.background)
-                .centerCrop()
-                .into(iv_background);
-    }
-
-    /* use for load data async and change list view when we add new postiona*/
     @Override
     protected void onStart() {
         super.onStart();
         mResults.addChangeListener(mChangeListener);
     }
 
-    /* use for load data async and change list view when we add new postiona*/
     @Override
     protected void onStop() {
         super.onStop();
         mResults.removeChangeListener(mChangeListener);
+    }
+
+    private void initBackgroundImage() {
+        ImageView background = (ImageView) findViewById(R.id.iv_background);
+        Glide.with(this)
+                .load(R.drawable.background)
+                .centerCrop()
+                .into(background);
     }
 }
