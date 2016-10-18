@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import io.realm.RealmResults;
 import pl.yellowgroup.application.backetdrops.adapters.AdapterDrops;
 import pl.yellowgroup.application.backetdrops.adapters.AddListener;
 import pl.yellowgroup.application.backetdrops.adapters.Divider;
+import pl.yellowgroup.application.backetdrops.adapters.SimpleTouchCallback;
 import pl.yellowgroup.application.backetdrops.beans.Drop;
 import pl.yellowgroup.application.backetdrops.widgets.BucketRecyclerView;
 
@@ -83,8 +85,13 @@ public class MainActivity extends AppCompatActivity {
         // use data from adapter AdapterDrops () OR we can set this code in layout XML in activity_main.xml in RecyclerView app:layoutManager
         //LinearLayoutManager manager = new LinearLayoutManager(this); for first part comment
         //mRecycler.setLayoutManager(manager); for first part comment
-        mAdapter = new AdapterDrops(this, mResults, mAddListener);
+        mAdapter = new AdapterDrops(this, mRealm, mResults, mAddListener);
         mRecycler.setAdapter(mAdapter);
+
+        SimpleTouchCallback callback = new SimpleTouchCallback(mAdapter);
+        ItemTouchHelper helper =  new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(mRecycler);
+
         //change view if
         mRecycler.hideIfEmpty(mToolbar);
         mRecycler.showIfEmpty(mEmptyView);
