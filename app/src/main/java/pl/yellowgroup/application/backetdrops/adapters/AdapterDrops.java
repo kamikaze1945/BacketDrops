@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 import pl.yellowgroup.application.backetdrops.R;
 import pl.yellowgroup.application.backetdrops.beans.Drop;
@@ -16,30 +17,33 @@ import pl.yellowgroup.application.backetdrops.beans.Drop;
  * Created by darek on 17.10.2016.
  */
 
-public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SwipeListener {
     public static final String TAG = AdapterDrops.class.getSimpleName();
 
     public static final int ITEM = 0;
     public static final int FOOTER = 1;
 
     private LayoutInflater mInflater;
+    private Realm mRealm;
     private RealmResults<Drop> mResults;
     private AddListener mAddListener;
 
-    public AdapterDrops(Context context, RealmResults<Drop> results) {
+    public AdapterDrops(Context context, Realm realm, RealmResults<Drop> results) {
         mInflater = LayoutInflater.from(context);
+        mRealm = realm;
         update(results);
     }
 
-    public AdapterDrops(Context context, RealmResults<Drop> results, AddListener listener) {
+    public AdapterDrops(Context context, Realm realm, RealmResults<Drop> results, AddListener listener) {
         mInflater = LayoutInflater.from(context);
         update(results);
+        mRealm = realm;
         mAddListener = listener;
     }
 
     public void update(RealmResults<Drop> results) {
         mResults = results;
-        // we need add this method because refresh data on list recycler View when we add new position
+        // we need add this method because refresh data on list recycler View when we add new item
         notifyDataSetChanged();
     }
 
@@ -75,7 +79,22 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return mResults.size() + 1;
+        // set 0 if empty because we used this method in BucketRecyclerView in toggleViews()
+        if (mResults == null || mResults.isEmpty()) {
+            return 0;
+        } else { // show list item with footer
+            return mResults.size() + 1;
+        }
+    }
+
+    @Override
+    public void onSwipe(int position) {
+        if (position < mResults.size()) {
+            mRealm.beginTransaction();
+            mResults.get(position).removeFromRealm();
+            mRealm.commitTransaction();
+            notifyItemRemoved(position);
+        }
     }
 
     public static class DropHolder extends RecyclerView.ViewHolder {

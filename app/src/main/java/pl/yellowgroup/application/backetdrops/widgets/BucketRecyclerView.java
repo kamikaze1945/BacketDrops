@@ -52,6 +52,11 @@ public class BucketRecyclerView extends RecyclerView {
         }
     };
 
+    /**
+     * Function show first screen with logo and button add if not item
+     * OR
+     * show view with items and Footer (on this footer is button)
+     */
     private void toggleViews() {
         if (getAdapter() != null && !mEmptyViews.isEmpty() && !mNonEmptyViews.isEmpty()) {
             if (getAdapter().getItemCount() == 0) {
