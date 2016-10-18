@@ -5,7 +5,7 @@
     android:padding="24dp"
     android:background="@color/bg_dialog">
 
-    <ImageView
+    <ImageButton
         android:id="@+id/btn_close"
         android:layout_width="12dp"
         android:layout_height="12dp"
@@ -26,5 +26,6 @@
         android:layout_marginBottom="96dp"
         android:drawablePadding="16dp"
         android:textSize="24sp"
+        android:textColor="@android:color/white"
         android:text="Mark Completed"/>
 </RelativeLayout>
