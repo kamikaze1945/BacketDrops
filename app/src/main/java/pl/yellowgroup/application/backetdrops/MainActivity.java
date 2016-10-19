@@ -17,6 +17,7 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import pl.yellowgroup.application.backetdrops.adapters.AdapterDrops;
 import pl.yellowgroup.application.backetdrops.adapters.AddListener;
+import pl.yellowgroup.application.backetdrops.adapters.CompliteListener;
 import pl.yellowgroup.application.backetdrops.adapters.Divider;
 import pl.yellowgroup.application.backetdrops.adapters.MarkListener;
 import pl.yellowgroup.application.backetdrops.adapters.SimpleTouchCallback;
@@ -62,6 +63,15 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private CompliteListener mCompleteListener = new CompliteListener() {
+        @Override
+        public void onComplited(int position) {
+            Log.d(TAG, "Position " + position);
+
+            mAdapter.onComplete(position);
+        }
+    };
+
     private void showDialogAdd() {
         DialogAddFragment dialog = new DialogAddFragment();
         dialog.show(getSupportFragmentManager(), "Add");
@@ -72,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putInt("POSITION", position);
         dialog.setArguments(bundle);
+        dialog.setCompleteListener(mCompleteListener);
         dialog.show(getSupportFragmentManager(), "Mark");
     }
 

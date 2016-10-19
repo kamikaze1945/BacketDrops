@@ -8,7 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
+
+import pl.yellowgroup.application.backetdrops.adapters.CompliteListener;
 
 /**
  * Created by darek on 18.10.2016.
@@ -24,11 +25,23 @@ public class DialogMark extends DialogFragment {
             switch (v.getId()) {
                 case R.id.btn_completed:
                     //TODO handle the action here to mark the item as complete
+                    markAsComplited();
                     break;
             }
             dismiss();
         }
     };
+    private CompliteListener mListener;
+
+    private void markAsComplited() {
+        Bundle arguments = getArguments();
+
+        if(mListener != null && arguments!= null && !arguments.isEmpty() ) {
+
+            int position = arguments.getInt("POSITION");
+            mListener.onComplited(position);
+        }
+    }
 
     @Nullable
     @Override
@@ -43,11 +56,9 @@ public class DialogMark extends DialogFragment {
         mBtnCompleted = (Button) view.findViewById(R.id.btn_completed);
         mBtnClose.setOnClickListener(mBtnClickListener);
         mBtnCompleted.setOnClickListener(mBtnClickListener);
+    }
 
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            int position = arguments.getInt("POSITION");
-            Toast.makeText(getActivity(), "position " + position, Toast.LENGTH_SHORT).show();
-        }
+    public void setCompleteListener(CompliteListener mCompleteListener) {
+        mListener = mCompleteListener;
     }
 }
