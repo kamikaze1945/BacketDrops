@@ -1,10 +1,14 @@
 package pl.yellowgroup.application.backetdrops.extras;
 
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Build;
 import android.view.View;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by darek on 17.10.2016.
@@ -33,5 +37,16 @@ public class Util {
         } else {
             view.setBackgroundDrawable(drawable);
         }
+    }
+
+    public static String getUTCstring(Location location) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String date = sdf.format(new Date(location.getTime()));
+        // Append the string "UTC" to the date
+        if(!date.contains("UTC")) {
+            date += " UTC";
+        }
+        return date;
     }
 }
