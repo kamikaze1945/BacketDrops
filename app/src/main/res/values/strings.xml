@@ -4,4 +4,8 @@
     <string name="hint_et_drop">What it is ?</string>
     <string name="str_add_it">Add it</string>
     <string name="str_add_drop">Add a drop</string>
+    <string name="action_most_time_left">Most Time Left</string>
+    <string name="action_least_time_left">Least Time Left</string>
+    <string name="action_complete">Complete</string>
+    <string name="action_incomplete">Incomplete</string>
 </resources>
