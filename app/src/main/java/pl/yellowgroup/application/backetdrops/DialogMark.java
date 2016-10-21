@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-import pl.yellowgroup.application.backetdrops.adapters.CompliteListener;
+import pl.yellowgroup.application.backetdrops.adapters.CompleteListener;
 
 /**
  * Created by darek on 18.10.2016.
@@ -31,7 +31,7 @@ public class DialogMark extends DialogFragment {
             dismiss();
         }
     };
-    private CompliteListener mListener;
+    private CompleteListener mListener;
 
     private void markAsComplited() {
         Bundle arguments = getArguments();
@@ -39,7 +39,7 @@ public class DialogMark extends DialogFragment {
         if(mListener != null && arguments!= null && !arguments.isEmpty() ) {
 
             int position = arguments.getInt("POSITION");
-            mListener.onComplited(position);
+            mListener.onComplete(position);
         }
     }
 
@@ -58,7 +58,7 @@ public class DialogMark extends DialogFragment {
         mBtnCompleted.setOnClickListener(mBtnClickListener);
     }
 
-    public void setCompleteListener(CompliteListener mCompleteListener) {
+    public void setCompleteListener(CompleteListener mCompleteListener) {
         mListener = mCompleteListener;
     }
 }

@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import pl.yellowgroup.application.backetdrops.AppBucketDrops;
 import pl.yellowgroup.application.backetdrops.R;
 import pl.yellowgroup.application.backetdrops.beans.Drop;
 import pl.yellowgroup.application.backetdrops.extras.Util;
@@ -25,22 +25,23 @@ import pl.yellowgroup.application.backetdrops.extras.Util;
 public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SwipeListener {
     public static final String TAG = AdapterDrops.class.getSimpleName();
 
+    public static final int COUNT_FOOTER = 1;
+    public static final int COUNT_NO_ITEMS = 1;
     public static final int ITEM = 0;
-    public static final int FOOTER = 1;
+    public static final int NO_ITEM = 1;
+    public static final int FOOTER = 2;
     private MarkListener mMarkListener;
 
     private LayoutInflater mInflater;
     private Realm mRealm;
     private RealmResults<Drop> mResults;
     private AddListener mAddListener;
+    private int mFilterOption;
+    private Context mContext;
 
-    public AdapterDrops(Context context, Realm realm, RealmResults<Drop> results) {
-        mInflater = LayoutInflater.from(context);
-        mRealm = realm;
-        update(results);
-    }
 
     public AdapterDrops(Context context, Realm realm, RealmResults<Drop> results, AddListener listener, MarkListener markListener) {
+        mContext = context;
         mInflater = LayoutInflater.from(context);
         update(results);
         mRealm = realm;
@@ -50,17 +51,45 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public void update(RealmResults<Drop> results) {
         mResults = results;
-        // we need add this method because refresh data on list recycler View when we add new item
+        mFilterOption = AppBucketDrops.load(mContext);
         notifyDataSetChanged();
+
+    }
+
+    @Override
+    public int getItemCount() {
+        if (!mResults.isEmpty()) {
+            return mResults.size() + COUNT_FOOTER;
+        } else {
+            if (mFilterOption == Filter.LEAST_TIME_LEFT
+                    || mFilterOption == Filter.MOST_TIME_LEFT
+                    || mFilterOption == Filter.NONE) {
+                return 0;
+            } else {
+                return COUNT_NO_ITEMS + COUNT_FOOTER;
+            }
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
-        //We return an item if results are null or if the position is within the bounds of the results
-        if (mResults == null || position < mResults.size()) {
-            return ITEM;
+        if (!mResults.isEmpty()) {
+            if (position < mResults.size()) {
+                return ITEM;
+            } else {
+                return FOOTER;
+            }
         } else {
-            return FOOTER;
+            if (mFilterOption == Filter.COMPLETE ||
+                    mFilterOption == Filter.INCOMPLETE) {
+                if (position == 0) {
+                    return NO_ITEM;
+                } else {
+                    return FOOTER;
+                }
+            } else {
+                return ITEM;
+            }
         }
     }
 
@@ -69,6 +98,9 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (viewType == FOOTER) {
             View view = mInflater.inflate(R.layout.footer, parent, false);
             return new FooterHolder(view, mAddListener);
+        } else if (viewType == NO_ITEM) {
+            View view = mInflater.inflate(R.layout.no_item, parent, false);
+            return new NoItemsHolder(view);
         } else {
             View view = mInflater.inflate(R.layout.drop_row, parent, false);
             return new DropHolder(view, mMarkListener);
@@ -87,16 +119,6 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public int getItemCount() {
-        // set 0 if empty because we used this method in BucketRecyclerView in toggleViews()
-        if (mResults == null || mResults.isEmpty()) {
-            return 0;
-        } else { // show list item with footer
-            return mResults.size() + 1;
-        }
-    }
-
-    @Override
     public void onSwipe(int position) {
         if (position < mResults.size()) {
             mRealm.beginTransaction();
@@ -106,8 +128,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    public void onComplete(int position) {
-        // action if position is not footer
+    public void markComplete(int position) {
         if (position < mResults.size()) {
             mRealm.beginTransaction();
             mResults.get(position).setCompleted(true);
@@ -126,13 +147,12 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         public DropHolder(View itemView, MarkListener listener) {
             super(itemView);
-
+            mItemView = itemView;
             mContext = itemView.getContext();
             itemView.setOnClickListener(this);
             mTextWhat = (TextView) itemView.findViewById(R.id.tv_what);
             mTextWhen = (TextView) itemView.findViewById(R.id.tv_when);
             mMarkListener = listener;
-            mItemView = itemView;
         }
 
         public void setWhat(String what) {
@@ -151,14 +171,18 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             } else {
                 drawable = ContextCompat.getDrawable(mContext, R.drawable.bg_row_drop);
             }
-
-            // check version SDK
             Util.setBackground(mItemView, drawable);
         }
 
         public void setWhen(long when) {
-            Log.d(TAG, "Time:::::" + System.currentTimeMillis() + "/" + DateUtils.DAY_IN_MILLIS);
             mTextWhen.setText(DateUtils.getRelativeTimeSpanString(when, System.currentTimeMillis(), DateUtils.DAY_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL));
+        }
+    }
+
+    public static class NoItemsHolder extends RecyclerView.ViewHolder {
+
+        public NoItemsHolder(View itemView) {
+            super(itemView);
         }
     }
 

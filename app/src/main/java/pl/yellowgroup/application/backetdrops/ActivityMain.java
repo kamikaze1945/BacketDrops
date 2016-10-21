@@ -1,12 +1,10 @@
 package pl.yellowgroup.application.backetdrops;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +19,7 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 import pl.yellowgroup.application.backetdrops.adapters.AdapterDrops;
 import pl.yellowgroup.application.backetdrops.adapters.AddListener;
-import pl.yellowgroup.application.backetdrops.adapters.CompliteListener;
+import pl.yellowgroup.application.backetdrops.adapters.CompleteListener;
 import pl.yellowgroup.application.backetdrops.adapters.Divider;
 import pl.yellowgroup.application.backetdrops.adapters.Filter;
 import pl.yellowgroup.application.backetdrops.adapters.MarkListener;
@@ -39,6 +37,7 @@ public class ActivityMain extends AppCompatActivity {
     RealmResults<Drop> mResults;
     View mEmptyView;
     AdapterDrops mAdapter;
+
     private View.OnClickListener mBtnAddListener = new View.OnClickListener() {
 
         @Override
@@ -56,7 +55,6 @@ public class ActivityMain extends AppCompatActivity {
     private RealmChangeListener mChangeListener = new RealmChangeListener() {
         @Override
         public void onChange() {
-            Log.d(TAG, "onChange: was called");
             mAdapter.update(mResults);
         }
     };
@@ -68,12 +66,10 @@ public class ActivityMain extends AppCompatActivity {
         }
     };
 
-    private CompliteListener mCompleteListener = new CompliteListener() {
+    private CompleteListener mCompleteListener = new CompleteListener() {
         @Override
-        public void onComplited(int position) {
-            Log.d(TAG, "Position " + position);
-
-            mAdapter.onComplete(position);
+        public void onComplete(int position) {
+            mAdapter.markComplete(position);
         }
     };
 
@@ -100,10 +96,7 @@ public class ActivityMain extends AppCompatActivity {
         mBtnAdd = (Button) findViewById(R.id.btn_add);
         mBtnAdd.setOnClickListener(mBtnAddListener);
         mRealm = Realm.getDefaultInstance();
-
-        // check choise sort
-        int filterOption = load();
-        // search in database Realm
+        int filterOption = AppBucketDrops.load(this);
         loadResults(filterOption);
         mEmptyView = findViewById(R.id.empty_drops);
         mRecycler = (BucketRecyclerView) findViewById(R.id.rv_drops);
@@ -124,6 +117,7 @@ public class ActivityMain extends AppCompatActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -133,27 +127,27 @@ public class ActivityMain extends AppCompatActivity {
             case R.id.action_add:
                 showDialogAdd();
                 break;
+            case R.id.action_sort_none:
+                filterOption = Filter.NONE;
+                break;
             case R.id.action_sort_ascending_date:
                 filterOption = Filter.LEAST_TIME_LEFT;
-                save(Filter.LEAST_TIME_LEFT);
                 break;
             case R.id.action_sort_descending_date:
                 filterOption = Filter.MOST_TIME_LEFT;
-                save(Filter.MOST_TIME_LEFT);
                 break;
             case R.id.action_show_complete:
                 filterOption = Filter.COMPLETE;
-                save(Filter.COMPLETE);
                 break;
             case R.id.action_show_incomplete:
                 filterOption = Filter.INCOMPLETE;
-                save(Filter.INCOMPLETE);
                 break;
             default:
                 handled = false;
                 break;
         }
         loadResults(filterOption);
+        AppBucketDrops.save(this, filterOption);
         return handled;
     }
 
@@ -178,20 +172,6 @@ public class ActivityMain extends AppCompatActivity {
         mResults.addChangeListener(mChangeListener);
     }
 
-    private void save(int filterOption) {
-        SharedPreferences pref = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("filter", filterOption);
-       // commit() writes the data synchronously (blocking the thread its called from). It then informs you about the success of the operation.
-       // apply() schedules the data to be written asynchronously. It does not inform you about the success of the operation.
-        editor.apply();
-    }
-
-    private int load() {
-        SharedPreferences pref = getPreferences(MODE_PRIVATE);
-        int filterOption = pref.getInt("filter", Filter.NONE);
-        return filterOption;
-    }
 
     @Override
     protected void onStart() {
@@ -204,6 +184,7 @@ public class ActivityMain extends AppCompatActivity {
         super.onStop();
         mResults.removeChangeListener(mChangeListener);
     }
+
 
     private void initBackgroundImage() {
         ImageView background = (ImageView) findViewById(R.id.iv_background);

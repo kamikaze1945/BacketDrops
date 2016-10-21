@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:vivz="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/action_add"
         android:icon="@drawable/ic_action_add"
-        app:showAsAction="always"
-        android:title="Add"></item>
+        android:title="@string/action_add"
+        vivz:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_sort_none"
+        android:title="@string/action_none" />
     <item
         android:id="@+id/action_sort_descending_date"
         android:title="@string/action_most_time_left" />
