@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import pl.yellowgroup.application.backetdrops.adapters.AdapterDrops;
 import pl.yellowgroup.application.backetdrops.adapters.AddListener;
 import pl.yellowgroup.application.backetdrops.adapters.CompliteListener;
@@ -26,7 +27,7 @@ import pl.yellowgroup.application.backetdrops.adapters.SimpleTouchCallback;
 import pl.yellowgroup.application.backetdrops.beans.Drop;
 import pl.yellowgroup.application.backetdrops.widgets.BucketRecyclerView;
 
-public class MainActivity extends AppCompatActivity {
+public class ActivityMain extends AppCompatActivity {
 
     public static final String TAG = "VIVZ";
     Toolbar mToolbar;
@@ -123,8 +124,24 @@ public class MainActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.action_add:
-
-                break;
+                showDialogAdd();
+                return true;
+            case R.id.action_sort_ascending_date:
+                mResults = mRealm.where(Drop.class).findAllSortedAsync("when");
+                mResults.addChangeListener(mChangeListener);
+                return true;
+            case R.id.action_sort_descending_date:
+                mResults = mRealm.where(Drop.class).findAllSortedAsync("when", Sort.DESCENDING);
+                mResults.addChangeListener(mChangeListener);
+                return true;
+            case R.id.action_show_complete:
+                mResults = mRealm.where(Drop.class).equalTo("completed",true).findAllAsync();
+                mResults.addChangeListener(mChangeListener);
+                return true;
+            case R.id.action_show_incomplete:
+                mResults = mRealm.where(Drop.class).equalTo("completed",false).findAllAsync();
+                mResults.addChangeListener(mChangeListener);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
