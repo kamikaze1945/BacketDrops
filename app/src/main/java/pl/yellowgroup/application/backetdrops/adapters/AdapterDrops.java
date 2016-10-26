@@ -56,6 +56,19 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
+    /**
+     * Get position item (We use this item in animation)
+     * @param position
+     * @return
+     */
+    @Override
+    public long getItemId(int position) {
+        if (position < mResults.size()) {
+            return mResults.get(position).getAdded();
+        }
+        return super.getItemId(position);
+    }
+
     @Override
     public int getItemCount() {
         if (!mResults.isEmpty()) {
