@@ -24,6 +24,7 @@ import pl.yellowgroup.application.backetdrops.adapters.CompleteListener;
 import pl.yellowgroup.application.backetdrops.adapters.Divider;
 import pl.yellowgroup.application.backetdrops.adapters.Filter;
 import pl.yellowgroup.application.backetdrops.adapters.MarkListener;
+import pl.yellowgroup.application.backetdrops.adapters.ResetListener;
 import pl.yellowgroup.application.backetdrops.adapters.SimpleTouchCallback;
 import pl.yellowgroup.application.backetdrops.beans.Drop;
 import pl.yellowgroup.application.backetdrops.widgets.BucketRecyclerView;
@@ -74,6 +75,14 @@ public class ActivityMain extends AppCompatActivity {
         }
     };
 
+    private ResetListener mResetListener = new ResetListener() {
+        @Override
+        public void onReset() { // reset when we don't have item what we checkk by filter(when use filter which ave item then we see item )
+            AppBucketDrops.save(ActivityMain.this, Filter.NONE);
+            loadResults(Filter.NONE);
+        }
+    };
+
     private void showDialogAdd() {
         DialogAddFragment dialog = new DialogAddFragment();
         dialog.show(getSupportFragmentManager(), "Add");
@@ -105,7 +114,7 @@ public class ActivityMain extends AppCompatActivity {
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mRecycler.hideIfEmpty(mToolbar);
         mRecycler.showIfEmpty(mEmptyView);
-        mAdapter = new AdapterDrops(this, mRealm, mResults, mAddListener, mMarkListener);
+        mAdapter = new AdapterDrops(this, mRealm, mResults, mAddListener, mMarkListener, mResetListener);
         mAdapter.setHasStableIds(true); // each item can be represented with a unique identifier
         mRecycler.setAdapter(mAdapter);
         SimpleTouchCallback callback = new SimpleTouchCallback(mAdapter);
