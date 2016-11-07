@@ -40,6 +40,13 @@ public class DialogAddFragment extends DialogFragment {
         }
     };
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // set neww style on dialog
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogTheme);
+    }
+
     //todo: process date
     private void addAction() {
         //get the value of the 'goal' or 'to-do'
