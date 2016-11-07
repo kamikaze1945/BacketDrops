@@ -141,6 +141,14 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             mRealm.commitTransaction();
             notifyItemRemoved(position);
         }
+
+        resetFilterIfEmpty();
+    }
+
+    private void resetFilterIfEmpty() {
+        if (mResults.isEmpty() && (mFilterOption == Filter.COMPLETE || mFilterOption == Filter.INCOMPLETE)) {
+            mResetListener .onReset();
+        }
     }
 
     public void markComplete(int position) {
