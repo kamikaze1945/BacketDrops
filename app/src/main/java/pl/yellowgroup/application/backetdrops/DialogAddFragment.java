@@ -7,14 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import java.util.Calendar;
-
 import io.realm.Realm;
 import pl.yellowgroup.application.backetdrops.beans.Drop;
+import pl.yellowgroup.application.backetdrops.widgets.BucketPickerView;
 
 /**
  * Created by Dariusz on 15.10.2016.
@@ -24,7 +22,7 @@ public class DialogAddFragment extends DialogFragment {
 
     private ImageButton mBtnClose;
     private EditText mInputWhat;
-    private DatePicker mInputWhen;
+    private BucketPickerView mInputWhen;
     private Button mBtnAdd;
 
     private View.OnClickListener mBtnClickListener = new View.OnClickListener() {
@@ -52,22 +50,12 @@ public class DialogAddFragment extends DialogFragment {
         //get the value of the 'goal' or 'to-do'
         //get the time when it was added
         String what=mInputWhat.getText().toString();
-        String date = mInputWhen.getDayOfMonth() + "/" + mInputWhen.getMonth() + "/" + mInputWhen.getYear();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, mInputWhen.getDayOfMonth());
-        calendar.set(Calendar.MONTH, mInputWhen.getMonth());
-        calendar.set(Calendar.YEAR, mInputWhen.getYear());
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-
 
         long now = System.currentTimeMillis();
         // create instance db defoult Realm
         Realm realm = Realm.getDefaultInstance();
 
-        Drop drop= new Drop(what, now, calendar.getTimeInMillis(), false);
+        Drop drop= new Drop(what, now, mInputWhen.getTime(), false);
         realm.beginTransaction();
         realm.copyToRealm(drop);
         realm.commitTransaction();
@@ -89,7 +77,7 @@ public class DialogAddFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         mBtnClose = (ImageButton) view.findViewById(R.id.btn_close);
         mInputWhat = (EditText) view.findViewById(R.id.et_drop);
-        mInputWhen = (DatePicker) view.findViewById(R.id.bpv_date);
+        mInputWhen = (BucketPickerView) view.findViewById(R.id.bpv_date);
         mBtnAdd = (Button) view.findViewById(R.id.btn_add_it);
 
         mBtnClose.setOnClickListener(mBtnClickListener);
