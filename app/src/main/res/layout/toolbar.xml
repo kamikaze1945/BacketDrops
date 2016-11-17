@@ -1,30 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/dark_blue"
     app:popupTheme="@style/ToolbarStyle">
-    <TextView
-        android:id="@+id/tv_month"
-        style="@style/DatePickerItemStyle"
-        android:text="JAN" />
 
-    <Space
-        android:layout_width="32dp"
-        android:layout_height="match_parent" />
-
-    <TextView
-        android:id="@+id/tv_date"
-        style="@style/DatePickerItemStyle"
-        android:text="10" />
-
-    <Space
-        android:layout_width="32dp"
-        android:layout_height="match_parent" />
-
-    <TextView
-        android:id="@+id/tv_year"
-        style="@style/DatePickerItemStyle"
-        android:text="2021" />
 </android.support.v7.widget.Toolbar>

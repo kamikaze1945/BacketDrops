@@ -23,8 +23,6 @@ import pl.yellowgroup.application.backetdrops.extras.Util;
  */
 
 public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SwipeListener {
-    public static final String TAG = AdapterDrops.class.getSimpleName();
-
     public static final int COUNT_FOOTER = 1;
     public static final int COUNT_NO_ITEMS = 1;
     public static final int ITEM = 0;
@@ -36,6 +34,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private LayoutInflater mInflater;
     private Realm mRealm;
     private RealmResults<Drop> mResults;
+    public static final String TAG = "VIVZ";
     private AddListener mAddListener;
     private int mFilterOption;
     private Context mContext;
@@ -58,17 +57,12 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
-    /**
-     * Get position item (We use this item in animation)
-     * @param position
-     * @return
-     */
     @Override
     public long getItemId(int position) {
         if (position < mResults.size()) {
             return mResults.get(position).getAdded();
         }
-        return super.getItemId(position);
+        return RecyclerView.NO_ID;
     }
 
     @Override
@@ -141,13 +135,13 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             mRealm.commitTransaction();
             notifyItemRemoved(position);
         }
-
         resetFilterIfEmpty();
     }
 
     private void resetFilterIfEmpty() {
-        if (mResults.isEmpty() && (mFilterOption == Filter.COMPLETE || mFilterOption == Filter.INCOMPLETE)) {
-            mResetListener .onReset();
+        if (mResults.isEmpty() && (mFilterOption == Filter.COMPLETE ||
+                mFilterOption == Filter.INCOMPLETE)) {
+            mResetListener.onReset();
         }
     }
 
@@ -175,6 +169,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             itemView.setOnClickListener(this);
             mTextWhat = (TextView) itemView.findViewById(R.id.tv_what);
             mTextWhen = (TextView) itemView.findViewById(R.id.tv_when);
+            AppBucketDrops.setRalewayRegular(mContext, mTextWhat, mTextWhen);
             mMarkListener = listener;
         }
 
@@ -211,12 +206,15 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public static class FooterHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        Context mContext;
         Button mBtnAdd;
         AddListener mListener;
 
         public FooterHolder(View itemView) {
             super(itemView);
+            mContext = itemView.getContext();
             mBtnAdd = (Button) itemView.findViewById(R.id.btn_footer);
+            AppBucketDrops.setRalewayRegular(mContext, mBtnAdd);
             mBtnAdd.setOnClickListener(this);
         }
 
