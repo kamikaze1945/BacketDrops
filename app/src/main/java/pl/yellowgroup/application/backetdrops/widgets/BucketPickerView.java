@@ -88,6 +88,10 @@ public class BucketPickerView extends LinearLayout implements View.OnTouchListen
         mDownPressed = ContextCompat.getDrawable(context, R.drawable.down_pressed);
     }
 
+    /**
+     * When rotate device save date and update to next position device
+     * @return
+     */
     @Override
     protected Parcelable onSaveInstanceState() {
         Log.d(TAG, "onSaveInstanceState: ");
@@ -99,6 +103,11 @@ public class BucketPickerView extends LinearLayout implements View.OnTouchListen
         return bundle;
     }
 
+
+    /**
+     * When rotate device save date and update to next position device
+     * @param state
+     */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         Log.d(TAG, "onRestoreInstanceState: ");

@@ -3,7 +3,9 @@ package pl.yellowgroup.application.backetdrops;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.preference.PreferenceManager;
+import android.widget.TextView;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -13,15 +15,16 @@ import pl.yellowgroup.application.backetdrops.adapters.Filter;
  * Created by darek on 17.10.2016.
  */
 
+/**
+ * Created by vivz on 30/12/15.
+ */
 public class AppBucketDrops extends Application {
+    public static final String TAG = "VIVZ";
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        RealmConfiguration configuration = new RealmConfiguration.Builder(this)
-                .name("db_backet_drop.realm")
-                .build();
+        RealmConfiguration configuration = new RealmConfiguration.Builder(this).build();
         Realm.setDefaultConfiguration(configuration);
     }
 
@@ -30,8 +33,6 @@ public class AppBucketDrops extends Application {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt("filter", filterOption);
-        // commit() writes the data synchronously (blocking the thread its called from). It then informs you about the success of the operation.
-        // apply() schedules the data to be written asynchronously. It does not inform you about the success of the operation.
         editor.apply();
     }
 
@@ -39,5 +40,17 @@ public class AppBucketDrops extends Application {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         int filterOption = pref.getInt("filter", Filter.NONE);
         return filterOption;
+    }
+
+    public static void setRalewayRegular(Context context, TextView textView) {
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/raleway_thin.ttf");
+        textView.setTypeface(typeface);
+    }
+
+    public static void setRalewayRegular(Context context, TextView... textViews) {
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/raleway_thin.ttf");
+        for (TextView textView : textViews) {
+            textView.setTypeface(typeface);
+        }
     }
 }

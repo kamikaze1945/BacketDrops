@@ -18,7 +18,7 @@ import pl.yellowgroup.application.backetdrops.widgets.BucketPickerView;
  * Created by Dariusz on 15.10.2016.
  */
 
-public class DialogAddFragment extends DialogFragment {
+public class DialogAdd extends DialogFragment {
 
     private ImageButton mBtnClose;
     private EditText mInputWhat;
@@ -29,7 +29,7 @@ public class DialogAddFragment extends DialogFragment {
         @Override
         public void onClick(View v) {
             int id = v.getId();
-            switch (id){
+            switch (id) {
                 case R.id.btn_add_it:
                     addAction();
                     break;
@@ -38,24 +38,13 @@ public class DialogAddFragment extends DialogFragment {
         }
     };
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // set neww style on dialog
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogTheme);
-    }
-
-    //todo: process date
     private void addAction() {
         //get the value of the 'goal' or 'to-do'
         //get the time when it was added
-        String what=mInputWhat.getText().toString();
-
+        String what = mInputWhat.getText().toString();
         long now = System.currentTimeMillis();
-        // create instance db defoult Realm
         Realm realm = Realm.getDefaultInstance();
-
-        Drop drop= new Drop(what, now, mInputWhen.getTime(), false);
+        Drop drop = new Drop(what, now, mInputWhen.getTime(), false);
         realm.beginTransaction();
         realm.copyToRealm(drop);
         realm.commitTransaction();
@@ -63,7 +52,13 @@ public class DialogAddFragment extends DialogFragment {
 
     }
 
-    public DialogAddFragment() {
+    public DialogAdd() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogTheme);
     }
 
     @Nullable
@@ -79,7 +74,7 @@ public class DialogAddFragment extends DialogFragment {
         mInputWhat = (EditText) view.findViewById(R.id.et_drop);
         mInputWhen = (BucketPickerView) view.findViewById(R.id.bpv_date);
         mBtnAdd = (Button) view.findViewById(R.id.btn_add_it);
-
+        AppBucketDrops.setRalewayRegular(getActivity(), mInputWhat, mBtnAdd);
         mBtnClose.setOnClickListener(mBtnClickListener);
         mBtnAdd.setOnClickListener(mBtnClickListener);
     }
