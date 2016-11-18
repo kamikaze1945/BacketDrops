@@ -1,8 +1,5 @@
 package pl.yellowgroup.application.backetdrops;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -30,7 +27,7 @@ import pl.yellowgroup.application.backetdrops.adapters.MarkListener;
 import pl.yellowgroup.application.backetdrops.adapters.ResetListener;
 import pl.yellowgroup.application.backetdrops.adapters.SimpleTouchCallback;
 import pl.yellowgroup.application.backetdrops.beans.Drop;
-import pl.yellowgroup.application.backetdrops.services.NotificationService;
+import pl.yellowgroup.application.backetdrops.extras.Util;
 import pl.yellowgroup.application.backetdrops.widgets.BucketRecyclerView;
 
 public class ActivityMain extends AppCompatActivity {
@@ -125,11 +122,7 @@ public class ActivityMain extends AppCompatActivity {
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(mRecycler);
         initBackgroundImage();
-        // add manager alarm and intent
-        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent intent = new Intent(this, NotificationService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        manager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 5000, pendingIntent);
+        Util.scheduleAlarm(this);
     }
 
     @Override
