@@ -1,11 +1,15 @@
 package pl.yellowgroup.application.backetdrops.services;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.content.Intent;
 import android.util.Log;
 
+import br.com.goncalves.pugnotification.notification.PugNotification;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import pl.yellowgroup.application.backetdrops.ActivityMain;
+import pl.yellowgroup.application.backetdrops.R;
 import pl.yellowgroup.application.backetdrops.beans.Drop;
 
 
@@ -32,7 +36,7 @@ public class NotificationService extends IntentService {
             RealmResults<Drop> results = realm.where(Drop.class).equalTo("completed", false).findAll();
             for (Drop current : results) {
                 if (isNotificationNeeded(current.getAdded(), current.getWhen())) {
-                    Log.d(TAG, "onHandleIntent: notifcation needed");
+                    fireNotification(current);
                 }
             }
 
@@ -41,6 +45,22 @@ public class NotificationService extends IntentService {
                 realm.close();
             }
         }
+    }
+
+    private void fireNotification(Drop drop) {
+        String message = getString(R.string.notif_message) + "\"" + drop.getWhat() + "\"";
+        PugNotification.with(this)
+                .load()
+                .title(R.string.notif_title)
+                .message(message)
+                .bigTextStyle(R.string.notif_long_message)
+                .smallIcon(R.drawable.ic_drop)
+                .largeIcon(R.drawable.ic_drop)
+                .flags(Notification.DEFAULT_ALL)
+                .autoCancel(true)
+                .click(ActivityMain.class)
+                .simple()
+                .build();
     }
 
     private boolean isNotificationNeeded(long added, long when) {

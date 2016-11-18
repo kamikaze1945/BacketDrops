@@ -31,4 +31,5 @@ dependencies {
     compile 'io.realm:realm-android:0.87.1'
     compile 'com.android.support:recyclerview-v7:24.2.0'
     compile 'com.github.dmytrodanylyk.realm-browser:library:0.0.3'
+    compile 'com.github.halysongoncalves:pugnotification:1.8.1'
 }
