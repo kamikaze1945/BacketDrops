@@ -1,19 +1,20 @@
 package pl.yellowgroup.application.backetdrops.extras;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.os.Build;
 import android.view.View;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
+
+import pl.yellowgroup.application.backetdrops.services.NotificationService;
 
 /**
- * Created by darek on 17.10.2016.
+ * Created by vivz on 31/12/15.
  */
-
 public class Util {
     public static void showViews(List<View> views) {
         for (View view : views) {
@@ -39,14 +40,10 @@ public class Util {
         }
     }
 
-    public static String getUTCstring(Location location) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String date = sdf.format(new Date(location.getTime()));
-        // Append the string "UTC" to the date
-        if(!date.contains("UTC")) {
-            date += " UTC";
-        }
-        return date;
+    public static void scheduleAlarm(Context context){
+        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, NotificationService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        manager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 240000, pendingIntent);
     }
 }
